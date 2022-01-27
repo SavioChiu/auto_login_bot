@@ -10,8 +10,8 @@ from bs4 import BeautifulSoup
 
 user='x0gd0157@corphq.hk.pccw.com'
 pwd='corphq-P@ssw0rd202109'
-link2='https://zh-hk.facebook.com/'
-link='https://login.microsoftonline.com/'
+teams_link='https://teams.microsoft.com/'
+ms_login_link='https://login.microsoftonline.com/'
 
 def init():
     os.system("C:\\Users\\micke\\PycharmProjects\\auto_attender\\chromedriver.exe")
@@ -20,7 +20,7 @@ def init():
 
 
 driver = selenium.Chrome()
-driver.get(link)
+driver.get(ms_login_link)
 
 #ms login page
 loop = True
@@ -37,7 +37,7 @@ while loop == True:
 driver.find_element(By.ID,'i0116').send_keys(user)
 driver.find_element(By.ID,'idSIButton9').click()
 
-time.sleep(10)
+time.sleep(5)
 
 #HKT login page
 loop = True
@@ -55,6 +55,8 @@ driver.find_element(By.ID,'passwordInput').send_keys(pwd)
 driver.find_element(By.ID,'submitButton').click()
 
 #ms Teams page
+driver.get(teams_link)
+
 loop = True
 while loop == True:
     try:

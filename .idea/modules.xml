@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/auto_attender.iml" filepath="$PROJECT_DIR$/.idea/auto_attender.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../web_crawler/.idea/web_crawler.iml" filepath="$PROJECT_DIR$/../web_crawler/.idea/web_crawler.iml" />
     </modules>
   </component>
 </project>
