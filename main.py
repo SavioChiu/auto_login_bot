@@ -1,5 +1,3 @@
-import time
-
 import selenium.webdriver as selenium
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -36,8 +34,6 @@ while loop == True:
 
 driver.find_element(By.ID,'i0116').send_keys(user)
 driver.find_element(By.ID,'idSIButton9').click()
-
-time.sleep(5)
 
 #HKT login page
 loop = True
