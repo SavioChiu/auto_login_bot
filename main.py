@@ -3,8 +3,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import os,threading,requests
-from bs4 import BeautifulSoup
+import os,threading,time
 
 user='x0gd0157@corphq.hk.pccw.com'
 pwd='corphq-P@ssw0rd202109'
@@ -27,13 +26,13 @@ while loop == True:
         element = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located((By.ID, "i0116"))
         )
-        loop=False
+
+        driver.find_element(By.ID, 'i0116').send_keys(user)
+        driver.find_element(By.ID, 'idSIButton9').click()
+        loop = False
 
     except Exception:
         pass
-
-driver.find_element(By.ID,'i0116').send_keys(user)
-driver.find_element(By.ID,'idSIButton9').click()
 
 #HKT login page
 loop = True
@@ -42,26 +41,38 @@ while loop == True:
         element = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located((By.ID, "passwordInput"))
         )
-        loop=False
+
+        driver.find_element(By.ID, 'passwordInput').send_keys(pwd)
+        driver.find_element(By.ID, 'submitButton').click()
+        loop = False
 
     except Exception:
         pass
 
-driver.find_element(By.ID,'passwordInput').send_keys(pwd)
-driver.find_element(By.ID,'submitButton').click()
+#stay sign page (optional)
+loop = True
+while loop == True:
+    try:
+        element = WebDriverWait(driver, 2).until(
+            EC.presence_of_element_located((By.ID, "idBtn_Back"))
+        )
+        driver.find_element(By.ID, 'idBtn_Back').click()
+        driver.get(teams_link)
+        loop = False
+
+    except Exception:
+        pass
 
 #ms Teams page
-driver.get(teams_link)
-
 loop = True
 while loop == True:
     try:
         element = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located(('ng-bind', "mh.decodeDisplayName(tab.displayName)"))
         )
+        driver.find_element('ng-bind', "mh.decodeDisplayName(tab.displayName)").click()
         loop=False
 
     except Exception:
         pass
 
-driver.find_element('ng-bind', "mh.decodeDisplayName(tab.displayName)").click()
