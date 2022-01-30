@@ -1,7 +1,5 @@
 import selenium.webdriver as selenium
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import os,threading,time
 
@@ -10,69 +8,119 @@ pwd='corphq-P@ssw0rd202109'
 teams_link='https://teams.microsoft.com/'
 ms_login_link='https://login.microsoftonline.com/'
 
+# class Info_value_null_error(Exception):
+#     print('Attendence Info should not be null')
+# class alart_is_not_click_error(Exception):
+#     print('alart is not click')
+
 def init():
     os.system("C:\\Users\\micke\\PycharmProjects\\auto_attender\\chromedriver.exe")
 
-#threading.Thread(target=init).start()
+def attendence_info():
+    trigger_time =['1:00','3:00','5:00','7:00','9:00','21:00','23:00']
+    real_time=time.strftime('%H:%M')
+    for i in trigger_time:
+        if real_time >= i:
+            return f'{i} {time.strftime("%d/%m")} Savio'
+        else:
+            pass
 
-
-driver = selenium.Chrome()
-driver.get(ms_login_link)
-
-#ms login page
-loop = True
-while loop == True:
+def main():
     try:
-        element = WebDriverWait(driver, 2).until(
-            EC.presence_of_element_located((By.ID, "i0116"))
-        )
+        driver = selenium.Chrome()
+        driver.get(ms_login_link)
+    except Exception as e:
+        threading.Thread(target=init).start()
 
-        driver.find_element(By.ID, 'i0116').send_keys(user)
-        driver.find_element(By.ID, 'idSIButton9').click()
-        loop = False
+    #ms login page
+    loop =True
+    while loop == True:
+        try:
+            email_input_action = driver.find_element(By.XPATH,'//input[@type="email"]')
+            submit_button_action = driver.find_element(By.XPATH,'//input[@id="idSIButton9"]')
+        except Exception as e:
+            pass
+        else:
+            email_input_action.send_keys(user)
+            submit_button_action.click()
+            break
 
-    except Exception:
-        pass
+    #HKT login page
+    loop = True
+    while loop == True:
+        try:
+            pwd_input_action = driver.find_element(By.XPATH,'//input[@id="passwordInput"]')
+            submit_button_action = driver.find_element(By.XPATH,'//span[@id="submitButton"]')
 
-#HKT login page
-loop = True
-while loop == True:
-    try:
-        element = WebDriverWait(driver, 2).until(
-            EC.presence_of_element_located((By.ID, "passwordInput"))
-        )
+        except Exception as e:
+            pass
+        else:
+            pwd_input_action.send_keys(pwd)
+            submit_button_action.click()
+            loop = False
 
-        driver.find_element(By.ID, 'passwordInput').send_keys(pwd)
-        driver.find_element(By.ID, 'submitButton').click()
-        loop = False
+    #stay sign page
+    loop = True
+    while loop == True:
+        try:
+            submit_button_action = driver.find_element(By.XPATH,'//input[@id="idBtn_Back"]')
+        except Exception as e:
+            pass
+        else:
+            submit_button_action.click()
+            driver.get(teams_link)
+            loop = False
 
-    except Exception:
-        pass
+    #ms Teams page HandOver tab
 
-#stay sign page (optional)
-loop = True
-while loop == True:
-    try:
-        element = WebDriverWait(driver, 2).until(
-            EC.presence_of_element_located((By.ID, "idBtn_Back"))
-        )
-        driver.find_element(By.ID, 'idBtn_Back').click()
-        driver.get(teams_link)
-        loop = False
+    loop = True
+    while loop == True:
+        try:
+            tab_action = driver.find_element(By.XPATH,'//a[@aria-label="Handover. Press Enter to select or press Shift+F10 for more options"]')
+        except Exception as e:
+            pass
+        else:
+            tab_action.click()
+            loop = False
 
-    except Exception:
-        pass
+    # ms teams page Attendence tab
+    loop = True
+    while loop==True:
+        try:
+            driver.switch_to.frame(
+                frame_reference=driver.find_element(
+                    By.XPATH,'//iframe[@title="Tasks by Planner and To Do Tab View"]'))
+            driver.switch_to.frame(
+                frame_reference=driver.find_element(
+                    By.XPATH, '//iframe[@title="Planner Tab View"]'))
+            tab_action = driver.find_element(By.XPATH,'//div[@aria-label="Add task card in Attendence column"]')
 
-#ms Teams page
-loop = True
-while loop == True:
-    try:
-        element = WebDriverWait(driver, 2).until(
-            EC.presence_of_element_located(('ng-bind', "mh.decodeDisplayName(tab.displayName)"))
-        )
-        driver.find_element('ng-bind', "mh.decodeDisplayName(tab.displayName)").click()
-        loop=False
+        except Exception as e:
+            print(e)
+        else:
+            tab_action.click()
+            loop = False
+        finally:
+            time.sleep(5)
 
-    except Exception:
-        pass
+    # ms teams attendence card
+    loop = True
+    while loop == True:
+        try:
+            info_input = driver.find_element(By.XPATH,'//input[@type="text"]')
+            #submit_button_action = driver.find_element(By.XPATH,'//button[@class="addTaskButton"]')
+            driver.execute_script('alert("Create new Attdence?")')
 
+            # if EC.alert_is_present()(driver):
+            #     raise Exception
+            # if attendence_info() == None:
+            #     raise Exception
+
+        except Exception as e:
+            print(e)
+            #pass
+        else:
+            info_input.send_keys(attendence_info())
+            #submit_button_action.click()
+
+main()
