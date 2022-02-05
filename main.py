@@ -1,7 +1,7 @@
 import selenium.webdriver as selenium
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-import os,threading,time
+import os,asyncio,time
 
 user='x0gd0157@corphq.hk.pccw.com'
 pwd='corphq-P@ssw0rd202109'
@@ -25,12 +25,13 @@ def attendence_info():
         else:
             pass
 
-def main():
+def login_bot():
     try:
         driver = selenium.Chrome()
         driver.get(ms_login_link)
     except Exception as e:
-        threading.Thread(target=init).start()
+        #threading.Thread(target=init).start()
+        event_3 = asyncio.wait(init)
 
     #ms login page
     loop =True
@@ -82,45 +83,58 @@ def main():
         else:
             tab_action.click()
             loop = False
+        finally:
+            time.sleep(2)
 
     # ms teams page Attendence tab
     loop = True
     while loop==True:
         try:
+
             driver.switch_to.frame(
                 frame_reference=driver.find_element(
                     By.XPATH,'//iframe[@title="Tasks by Planner and To Do Tab View"]'))
+        except Exception as e:
+            pass
+        else: loop=False
+
+    loop=True
+    while loop==True:
+        try:
             driver.switch_to.frame(
                 frame_reference=driver.find_element(
                     By.XPATH, '//iframe[@title="Planner Tab View"]'))
+        except Exception as e:
+            pass
+        else: loop=False
+
+    loop = True
+    while loop == True:
+        try:
             tab_action = driver.find_element(By.XPATH,'//div[@aria-label="Add task card in Attendence column"]')
 
         except Exception as e:
-            print(e)
+            pass
         else:
             tab_action.click()
             loop = False
-        finally:
-            time.sleep(5)
 
     # ms teams attendence card
     loop = True
     while loop == True:
         try:
             info_input = driver.find_element(By.XPATH,'//input[@type="text"]')
-            #submit_button_action = driver.find_element(By.XPATH,'//button[@class="addTaskButton"]')
-            driver.execute_script('alert("Create new Attdence?")')
-
-            # if EC.alert_is_present()(driver):
-            #     raise Exception
-            # if attendence_info() == None:
-            #     raise Exception
+            submit_button_action = driver.find_element(By.XPATH,'//button[@class="addTaskButton"]')
+            #driver.execute_script('alert("Create new Attdence?")')
+            #nfo_input.send_keys(attendence_info())
 
         except Exception as e:
-            print(e)
-            #pass
+            pass
         else:
-            info_input.send_keys(attendence_info())
             #submit_button_action.click()
 
-main()
+# loop = asyncio.get_event_loop()
+#
+# event_1 = asyncio.ensure_future(attendence_info)
+# event_2 = asyncio.ensure_future(login_bot)
+login_bot()
