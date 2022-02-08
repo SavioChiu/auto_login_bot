@@ -1,35 +1,32 @@
-import os
-import signal
-import time, tkinter,logging,wmi
+import os,time, tkinter,logging
 
 class Attendance_alarm:
 
     def __init__(self):
         self.log_init()
-        if 'alarm.exe' in wmi.WMI():
-            self.alarm()
-        else:
+        if 'y' in open('stats','r').readlines():
             self.gui()
-
-        logging.info('Attendance_alarm close')
+            logging.info('Attendance_alarm close')
+        else:
+            self.alarm()
 
     def log_init(self):
         logging.basicConfig(filename='Error.log',level=logging.INFO,format='%(asctime)s :: %(levelname)s :: %(message)s')
 
-    def pop_up(self):
-
-        def close():
-            root.destroy()
-
-        root = tkinter.Tk()
-        root.title('!!! Pls take attendance on MS Teams !!!')
-        label = tkinter.Label(root, text='!!! Pls take attendance on MS Teams !!!')
-        label.pack()
-        button = tkinter.Button(root, text='OK', command=close)
-        button.pack()
-        root.mainloop()
-
     def alarm(self):
+        def pop_up():
+
+            def close():
+                root.destroy()
+
+            root = tkinter.Tk()
+            root.title('!!! Pls take attendance on MS Teams !!!')
+            label = tkinter.Label(root, text='!!! Pls take attendance on MS Teams !!!')
+            label.pack()
+            button = tkinter.Button(root, text='OK', command=close)
+            button.pack()
+            root.mainloop()
+
         trigger_time = [
             {'time':'1','checked':False},
             {'time':'3','checked':False},
@@ -43,18 +40,18 @@ class Attendance_alarm:
             {'time':'19','checked':False},
             {'time':'21','checked':False},
             {'time':'23','checked':False}]
+
         while True:
             now_time = time.strftime('%H')
             for i in trigger_time:
                 if now_time == i['time']:
                     if i['checked']==False:
                         i['checked']=True
-                        self.pop_up()
+                        pop_up()
 
     def gui(self):
         def kill():
-            for i in wmi.WMI('')
-            os.kill(,signal.SIGSTOP)
+            os.system('taskkill /fi "imagename eq alarm.exe"')
         root = tkinter.Tk()
 
         label = tkinter.Label(text='Close the bot?')
